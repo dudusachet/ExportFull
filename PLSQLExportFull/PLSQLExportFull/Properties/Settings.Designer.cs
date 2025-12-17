@@ -82,5 +82,17 @@ namespace PLSQLExportFull.Properties {
                 this["LastPassword"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsBlueTheme {
+            get {
+                return ((bool)(this["IsBlueTheme"]));
+            }
+            set {
+                this["IsBlueTheme"] = value;
+            }
+        }
     }
 }

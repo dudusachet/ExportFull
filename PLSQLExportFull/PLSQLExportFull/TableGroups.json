@@ -6,6 +6,9 @@
         "TableName": "WMS_ALMOXARIFADO"
       },
       {
+        "TableName": "WMS_CONSUMO_MEDIO"
+      },
+      {
         "TableName": "WMS_AREAS_MOVIMENTACOES"
       },
       {
@@ -44,9 +47,6 @@
     "GroupName": "Estoque Com Dados Logisticos",
     "Tables": [
       {
-        "TableName": "WMS_CONSUMO_MEDIO"
-      },
-      {
         "TableName": "WMS_ESTOQUES_CD"
       },
       {
@@ -71,9 +71,6 @@
     "GroupName": "Estoque Sem Dados Logisticos",
     "Tables": [
       {
-        "TableName": "WMS_CONSUMO_MEDIO"
-      },
-      {
         "TableName": "WMS_ESTOQUES_CD"
       }
     ]
@@ -83,7 +80,7 @@
     "Tables": [
       {
         "TableName": "WMS_CARGAS",
-        "Where": "WHERE DTHR >= TRUNC(SYSDATE)-7",
+        "Where": "WHERE DTHR >= TRUNC(SYSDATE)-7 AND NUM_CARGA = NUM_CARGA",
         "MinMax": "ID"
       },
       {
@@ -121,7 +118,7 @@
     "Tables": [
       {
         "TableName": "WMS_CARGAS",
-        "Where": "WHERE DTHR >= TRUNC(SYSDATE)-7",
+        "Where": "WHERE DTHR >= TRUNC(SYSDATE)-7 AND NUM_CARGA = NUM_CARGA",
         "MinMax": "ID"
       },
       {
@@ -143,7 +140,7 @@
     "Tables": [
       {
         "TableName": "PEDIDOS",
-        "Where": "WHERE DTHR >= TRUNC(SYSDATE)-7",
+        "Where": "WHERE DTHR >= TRUNC(SYSDATE)-7 AND NUM_PEDIDO = NUM_PEDIDO",
         "MinMax": "ID"
       },
       {
@@ -274,10 +271,11 @@
         "TableName": "GER_USUARIOS_AVISOS"
       },
       {
-        "TableName": "GER_VERSOES"
+        "TableName": "GER_VERSOES_ATUALIZACAO",
+        "where": "WHERE GER_VERSOESATUALIZACAO_ID = (SELECT MAX(GER_VERSOESATUALIZACAO_ID) FROM GER_VERSOES_ATUALIZACAO)"
       },
       {
-        "TableName": "ITEM_UNID_MED"
+        "TableName": "GER_VERSOES"
       },
       {
         "TableName": "ROTA"
@@ -290,9 +288,6 @@
       },
       {
         "TableName": "WMS_ALMOX_TP_MOV_ESTOQUE"
-      },
-      {
-        "TableName": "WMS_ALMOXARIFADO"
       },
       {
         "TableName": "WMS_AREAS_COLABORADORES"
@@ -370,9 +365,6 @@
         "TableName": "WMS_TP_ESTOQUES"
       },
       {
-        "TableName": "WMS_TP_LA"
-      },
-      {
         "TableName": "WMS_TP_MOV_ESTOQUE"
       },
       {
@@ -394,7 +386,7 @@
     "Tables": [
       {
         "TableName": "WMS_AUTORIZACOES",
-        "Where": "WHERE DTHR >= TRUNC(SYSDATE)-7",
+        "Where": "WHERE DTHR >= TRUNC(SYSDATE)-7 AND AUTORIZACAO = AUTORIZACAO",
         "MinMax": "AUTORIZACAO"
       },
       {
@@ -460,7 +452,8 @@
         "TableName": "WMS_ETIQUETAS_ITENS"
       },
       {
-        "TableName": "WMS_ETIQUETAS"
+        "TableName": "WMS_ETIQUETAS",
+        "Where": "WHERE DTHR >= TRUNC(SYSDATE)-7"
       },
       {
         "TableName": "WMS_EMBALAGENS"

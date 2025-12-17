@@ -5,38 +5,19 @@ using PLSQLExportFull.Models;
 
 namespace PLSQLExportFull.Business
 {
-    /// <summary>
-    /// Gerencia operações com tabelas do banco de dados
-    /// </summary>
     public class TableManager
     {
         private OracleQueryExecutor _queryExecutor;
         private MetadataRepository _metadataRepository;
-
-        /// <summary>
-        /// Construtor
-        /// </summary>
-        /// <param name="queryExecutor">Executor de queries</param>
-        /// <param name="metadataRepository">Repositório de metadados</param>
         public TableManager(OracleQueryExecutor queryExecutor, MetadataRepository metadataRepository)
         {
             _queryExecutor = queryExecutor ?? throw new ArgumentNullException(nameof(queryExecutor));
             _metadataRepository = metadataRepository ?? throw new ArgumentNullException(nameof(metadataRepository));
         }
-
-        /// <summary>
-        /// Obtém lista de todas as tabelas
-        /// </summary>
-        /// <returns>Lista de TableInfo</returns>
         public List<TableInfo> GetAllTables()
         {
             return _metadataRepository.GetAllTables();
         }
-
-        /// <summary>
-        /// Trunca uma tabela
-        /// </summary>
-        /// <param name="tableName">Nome da tabela</param>
         public void TruncateTable(string tableName)
         {
             if (string.IsNullOrEmpty(tableName))
@@ -47,12 +28,6 @@ namespace PLSQLExportFull.Business
             string command = $"TRUNCATE TABLE {tableName}";
             _queryExecutor.ExecuteNonQuery(command);
         }
-
-        /// <summary>
-        /// Trunca múltiplas tabelas
-        /// </summary>
-        /// <param name="tableNames">Lista de nomes de tabelas</param>
-        /// <returns>Número de tabelas truncadas com sucesso</returns>
         public int TruncateTables(List<string> tableNames)
         {
             if (tableNames == null || tableNames.Count == 0)
@@ -83,11 +58,6 @@ namespace PLSQLExportFull.Business
 
             return successCount;
         }
-
-        /// <summary>
-        /// Deleta todos os dados de uma tabela (alternativa ao truncate quando há constraints)
-        /// </summary>
-        /// <param name="tableName">Nome da tabela</param>
         public void DeleteAllFromTable(string tableName)
         {
             if (string.IsNullOrEmpty(tableName))
@@ -99,11 +69,6 @@ namespace PLSQLExportFull.Business
             _queryExecutor.ExecuteNonQuery(command);
         }
 
-        /// <summary>
-        /// Obtém contagem de registros de uma tabela
-        /// </summary>
-        /// <param name="tableName">Nome da tabela</param>
-        /// <returns>Número de registros</returns>
         public long GetTableRowCount(string tableName)
         {
             if (string.IsNullOrEmpty(tableName))
@@ -122,11 +87,6 @@ namespace PLSQLExportFull.Business
             return 0;
         }
 
-        /// <summary>
-        /// Verifica se uma tabela existe
-        /// </summary>
-        /// <param name="tableName">Nome da tabela</param>
-        /// <returns>True se a tabela existe</returns>
         public bool TableExists(string tableName)
         {
             if (string.IsNullOrEmpty(tableName))

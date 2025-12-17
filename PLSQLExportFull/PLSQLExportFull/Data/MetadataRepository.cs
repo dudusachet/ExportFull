@@ -112,14 +112,18 @@ namespace PLSQLExportFull.Data
             {
                 string colName = row["COLUMN_NAME"].ToString();
 
-                // --- FILTRO GLOBAL DE EXCLUSÃO ---
-                // Se a coluna estiver na lista negra global, ela é ignorada (não entra no SELECT)
-                if (!_globalIgnoredColumns.Contains(colName))
+                // --- LÓGICA DE FILTRO ---
+                bool isIgnored = _globalIgnoredColumns.Contains(colName);
+
+                // Exceção: Se for WMS_CHECKOUT, permitimos exportar MAQUINA
+                bool isException = (tableName.ToUpper() == "WMS_CHECKOUT" && colName.ToUpper() == "MAQUINA");
+
+                // Se não for ignorado OU for uma exceção, adiciona na lista
+                if (!isIgnored || isException)
                 {
                     columnNames.Add(colName);
                 }
             }
-
             if (columnNames.Count == 0) return dmlStatements;
 
             string columnsList = string.Join(", ", columnNames);
@@ -168,6 +172,8 @@ namespace PLSQLExportFull.Data
 
             return dmlStatements;
         }
+
+
 
         /// <summary>
         /// Formata valor para SQL, aplicando LGPD e tratando CLOBs

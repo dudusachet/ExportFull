@@ -49,8 +49,9 @@ namespace PLSQLExportFull.Forms
             this.txtConnectionString = new System.Windows.Forms.TextBox();
             this.lblConnectionString = new System.Windows.Forms.Label();
             this.tabExport = new System.Windows.Forms.TabPage();
-            this.btnSortByRowsExport = new System.Windows.Forms.Button();
-            this.btnSortByNameExport = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
+            this.txtSearchTable = new System.Windows.Forms.TextBox();
+            this.gridTables = new System.Windows.Forms.DataGridView();
             this.cmbTableGroups = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.btnDeselectAllExport = new System.Windows.Forms.Button();
@@ -58,13 +59,14 @@ namespace PLSQLExportFull.Forms
             this.btnExport = new System.Windows.Forms.Button();
             this.txtWhereClause = new System.Windows.Forms.TextBox();
             this.lblWhereClause = new System.Windows.Forms.Label();
-            this.checkedListExportTables = new System.Windows.Forms.CheckedListBox();
+            this.chkZipOutput = new System.Windows.Forms.CheckBox();
             this.lblExportTables = new System.Windows.Forms.Label();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabControl.SuspendLayout();
             this.tabConnection.SuspendLayout();
             this.tabExport.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridTables)).BeginInit();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -295,9 +297,10 @@ namespace PLSQLExportFull.Forms
             // 
             // tabExport
             // 
+            this.tabExport.Controls.Add(this.label7);
+            this.tabExport.Controls.Add(this.txtSearchTable);
+            this.tabExport.Controls.Add(this.gridTables);
             this.tabExport.Controls.Add(this.chkTruncate);
-            this.tabExport.Controls.Add(this.btnSortByRowsExport);
-            this.tabExport.Controls.Add(this.btnSortByNameExport);
             this.tabExport.Controls.Add(this.cmbTableGroups);
             this.tabExport.Controls.Add(this.label6);
             this.tabExport.Controls.Add(this.btnDeselectAllExport);
@@ -305,7 +308,7 @@ namespace PLSQLExportFull.Forms
             this.tabExport.Controls.Add(this.btnExport);
             this.tabExport.Controls.Add(this.txtWhereClause);
             this.tabExport.Controls.Add(this.lblWhereClause);
-            this.tabExport.Controls.Add(this.checkedListExportTables);
+            this.tabExport.Controls.Add(this.chkZipOutput);
             this.tabExport.Controls.Add(this.lblExportTables);
             this.tabExport.Location = new System.Drawing.Point(4, 22);
             this.tabExport.Margin = new System.Windows.Forms.Padding(2);
@@ -316,45 +319,53 @@ namespace PLSQLExportFull.Forms
             this.tabExport.Text = "Exportação DML";
             this.tabExport.UseVisualStyleBackColor = true;
             // 
-            // btnSortByRowsExport
+            // label7
             // 
-            this.btnSortByRowsExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSortByRowsExport.Location = new System.Drawing.Point(380, 49);
-            this.btnSortByRowsExport.Margin = new System.Windows.Forms.Padding(2);
-            this.btnSortByRowsExport.Name = "btnSortByRowsExport";
-            this.btnSortByRowsExport.Size = new System.Drawing.Size(97, 24);
-            this.btnSortByRowsExport.TabIndex = 11;
-            this.btnSortByRowsExport.Text = "Ordenar Linhas";
-            this.btnSortByRowsExport.UseVisualStyleBackColor = true;
-            this.btnSortByRowsExport.Click += new System.EventHandler(this.btnSortByRowsExport_Click);
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(306, 49);
+            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(38, 13);
+            this.label7.TabIndex = 15;
+            this.label7.Text = "Nome:";
             // 
-            // btnSortByNameExport
+            // txtSearchTable
             // 
-            this.btnSortByNameExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSortByNameExport.Location = new System.Drawing.Point(481, 49);
-            this.btnSortByNameExport.Margin = new System.Windows.Forms.Padding(2);
-            this.btnSortByNameExport.Name = "btnSortByNameExport";
-            this.btnSortByNameExport.Size = new System.Drawing.Size(97, 24);
-            this.btnSortByNameExport.TabIndex = 10;
-            this.btnSortByNameExport.Text = "Ordenar Nome";
-            this.btnSortByNameExport.UseVisualStyleBackColor = true;
-            this.btnSortByNameExport.Click += new System.EventHandler(this.btnSortByNameExport_Click);
+            this.txtSearchTable.Location = new System.Drawing.Point(349, 46);
+            this.txtSearchTable.Name = "txtSearchTable";
+            this.txtSearchTable.Size = new System.Drawing.Size(226, 20);
+            this.txtSearchTable.TabIndex = 14;
+            // 
+            // gridTables
+            // 
+            this.gridTables.AllowUserToAddRows = false;
+            this.gridTables.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gridTables.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.gridTables.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gridTables.Location = new System.Drawing.Point(12, 72);
+            this.gridTables.Name = "gridTables";
+            this.gridTables.RowHeadersVisible = false;
+            this.gridTables.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.gridTables.Size = new System.Drawing.Size(563, 316);
+            this.gridTables.TabIndex = 13;
             // 
             // cmbTableGroups
             // 
             this.cmbTableGroups.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbTableGroups.FormattingEnabled = true;
-            this.cmbTableGroups.Location = new System.Drawing.Point(113, 49);
+            this.cmbTableGroups.Location = new System.Drawing.Point(113, 45);
             this.cmbTableGroups.Margin = new System.Windows.Forms.Padding(2);
             this.cmbTableGroups.Name = "cmbTableGroups";
-            this.cmbTableGroups.Size = new System.Drawing.Size(263, 21);
+            this.cmbTableGroups.Size = new System.Drawing.Size(189, 21);
             this.cmbTableGroups.TabIndex = 9;
             this.cmbTableGroups.SelectedIndexChanged += new System.EventHandler(this.cmbTableGroups_SelectedIndexChanged);
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(15, 52);
+            this.label6.Location = new System.Drawing.Point(15, 48);
             this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(95, 13);
@@ -421,17 +432,18 @@ namespace PLSQLExportFull.Forms
             this.lblWhereClause.TabIndex = 3;
             this.lblWhereClause.Text = "Cláusula WHERE (ex: ID >= 200):";
             // 
-            // checkedListExportTables
+            // chkZipOutput
             // 
-            this.checkedListExportTables.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkedListExportTables.FormattingEnabled = true;
-            this.checkedListExportTables.Location = new System.Drawing.Point(15, 84);
-            this.checkedListExportTables.Margin = new System.Windows.Forms.Padding(2);
-            this.checkedListExportTables.Name = "checkedListExportTables";
-            this.checkedListExportTables.Size = new System.Drawing.Size(564, 304);
-            this.checkedListExportTables.TabIndex = 1;
+            this.chkZipOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkZipOutput.AutoSize = true;
+            this.chkZipOutput.Checked = true;
+            this.chkZipOutput.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkZipOutput.Location = new System.Drawing.Point(193, 398);
+            this.chkZipOutput.Name = "chkZipOutput";
+            this.chkZipOutput.Size = new System.Drawing.Size(100, 17);
+            this.chkZipOutput.TabIndex = 7;
+            this.chkZipOutput.Text = "Compactar (.7z)";
+            this.chkZipOutput.UseVisualStyleBackColor = true;
             // 
             // lblExportTables
             // 
@@ -478,6 +490,7 @@ namespace PLSQLExportFull.Forms
             this.tabConnection.PerformLayout();
             this.tabExport.ResumeLayout(false);
             this.tabExport.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridTables)).EndInit();
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -492,35 +505,41 @@ namespace PLSQLExportFull.Forms
         private System.Windows.Forms.TabPage tabExport;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
-        private System.Windows.Forms.TextBox txtConnectionString;
-        private System.Windows.Forms.Label lblConnectionString;
-        private System.Windows.Forms.TextBox txtPassword;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox txtServiceName;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txtPort;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox txtHost;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label lblConnectionStatus;
+
+        // Botões
         private System.Windows.Forms.Button btnDisconnect;
         private System.Windows.Forms.Button btnConnect;
-        private System.Windows.Forms.CheckedListBox checkedListExportTables;
-        private System.Windows.Forms.Label lblExportTables;
-        //private System.Windows.Forms.Button btnRefreshExportTables;
-        private System.Windows.Forms.TextBox txtWhereClause;
-        private System.Windows.Forms.Label lblWhereClause;
         private System.Windows.Forms.Button btnExport;
         private System.Windows.Forms.Button btnDeselectAllExport;
         private System.Windows.Forms.Button btnSelectAllExport;
-        private System.Windows.Forms.ComboBox cmbTableGroups;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Button btnSortByRowsExport;
-        private System.Windows.Forms.Button btnSortByNameExport;
         private System.Windows.Forms.Button btnPasteString;
         private System.Windows.Forms.Button btnLoadConfig;
+
+        // Campos de Texto
+        private System.Windows.Forms.TextBox txtConnectionString;
+        private System.Windows.Forms.TextBox txtPassword;
+        private System.Windows.Forms.TextBox txtServiceName;
+        private System.Windows.Forms.TextBox txtPort;
+        private System.Windows.Forms.TextBox txtHost;
+        private System.Windows.Forms.TextBox txtWhereClause;
         public System.Windows.Forms.TextBox txtUserId;
+
+        // Labels
+        private System.Windows.Forms.Label lblConnectionString;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblConnectionStatus;
+        private System.Windows.Forms.Label lblExportTables;
+        private System.Windows.Forms.Label lblWhereClause;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox cmbTableGroups;
         private System.Windows.Forms.CheckBox chkTruncate;
+        private System.Windows.Forms.CheckBox chkZipOutput;
+        private System.Windows.Forms.DataGridView gridTables;
+        private System.Windows.Forms.TextBox txtSearchTable;
+        private System.Windows.Forms.Label label7;
     }
 }
