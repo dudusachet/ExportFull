@@ -30,7 +30,7 @@ O aplicativo conta com um sistema de temas embutido.
 
 1.  **Requisitos:**
     * Windows 10/11
-    * .NET Framework 4.8
+    * .NET Framework 4.0
     * Cliente Oracle ou DLLs necessárias (Oracle.ManagedDataAccess).
     * *(Opcional)* `7za.exe` na pasta raiz para funcionalidade de compactação.
 
