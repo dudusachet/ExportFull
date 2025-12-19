@@ -1,57 +1,55 @@
-# PLSQL Migration Suite - Export Tool (PLSQLExportTool)
+# PLSQLExportFull 🚀
 
-## Visão Geral
+**PLSQLExportFull** é uma ferramenta robusta e moderna desenvolvida em Windows Forms (.NET) para facilitar a exportação de dados (DML) de bancos de dados **Oracle**. 
 
-O **PLSQLExportTool** é uma ferramenta desktop desenvolvida em C# (.NET Framework 4.0) projetada para facilitar a exportação de dados (DML - Data Manipulation Language) de tabelas Oracle. É ideal para cenários de migração ou para a criação de scripts de carga de dados.
+Com foco em agilidade, permite selecionar tabelas, aplicar filtros `WHERE` personalizados e gerar scripts `.sql` (INSERTs) prontos para migração ou backup.
 
-A ferramenta permite a seleção de tabelas, aplicação de filtros WHERE customizados e a geração de scripts SQL prontos para execução no ambiente Oracle (SQL*Plus/SQLcl).
+![Status do Projeto](https://img.shields.io/badge/Status-Estável-green) ![Platform](https://img.shields.io/badge/Plataforma-Windows-blue) ![Database](https://img.shields.io/badge/Oracle-Database-red)
 
-## Funcionalidades Principais
+## ✨ Funcionalidades Principais
 
-*   **Exportação DML:** Gera scripts SQL contendo comandos `INSERT` para as tabelas selecionadas.
-*   **Compatibilidade:** Projetado para rodar em ambientes com **.NET Framework 4.0** (compatível com Visual Studio 2019).
-*   **Agrupamento de Tabelas:** Suporte a grupos de tabelas predefinidos via arquivo `TableGroups.json`, permitindo a exportação de conjuntos de dados relacionados.
-*   **Filtros WHERE Customizados:** Permite a aplicação de cláusulas `WHERE` manuais para exportação seletiva de dados.
-*   **Usabilidade:** Implementação de cursor de espera (`WaitCursor`) durante a exportação para melhor experiência do usuário.
-*   **Scripts Otimizados:**
-    *   Inclusão de comandos SQL*Plus/SQLcl (`SET ECHO OFF`, `SET FEEDBACK OFF`, etc.) para execução limpa.
-    *   Inclusão de *timestamps* de início e fim (global e por tabela) para monitoramento do processo de importação.
+* **Conexão Flexível:** Suporta conexão via TNS Full (String completa) ou simplificada (User/Pass@Host:Port/Service).
+* **Auto-Connect:** Reconhece e conecta automaticamente ao colar strings de conexão ou carregar arquivos `.config`.
+* **Seleção de Tabelas:** Visualização clara das tabelas com contagem de linhas.
+* **Filtros Inteligentes:** Edição da cláusula `WHERE` diretamente na grid para exportar apenas os dados necessários.
+* **Opções de Exportação:**
+    * ✅ **Add Truncate:** Adiciona comando `TRUNCATE TABLE` antes dos inserts.
+    * 📦 **Zip Output:** Compacta o arquivo final automaticamente (integração com 7-Zip).
+* **Interface Moderna:** Design limpo (Flat UI) com indicadores visuais de status e rodapé informativo.
+* **Grupos de Tabelas:** Filtragem rápida de tabelas baseada em grupos pré-definidos (`TableGroups.json`).
 
-## Requisitos
+## 🎨 Personalização (Temas)
 
-*   **Ambiente de Desenvolvimento:** Visual Studio 2019 (ou superior, com suporte a .NET Framework 4.0).
-*   **Runtime:** .NET Framework 4.0.
-*   **Banco de Dados:** Acesso a um banco de dados Oracle.
-*   **Dependências:**
-    *   `Oracle.ManagedDataAccess` (versão 19.21.0)
-    *   `Newtonsoft.Json` (para manipulação do arquivo de grupos)
+O aplicativo conta com um sistema de temas embutido.
+* **Atalho Secreto:** Pressione `Ctrl + Alt + G` para alternar entre os temas:
+    * 🔴 **Red Enterprise** (Padrão)
+    * 🔵 **Blue Ocean**
+* *Nota:* A preferência de cor é salva automaticamente e lembrada na próxima execução.
 
-## Como Usar
+## 🛠️ Instalação e Requisitos
 
-### 1. Configuração e Conexão
+1.  **Requisitos:**
+    * Windows 10/11
+    * .NET Framework 4.8
+    * Cliente Oracle ou DLLs necessárias (Oracle.ManagedDataAccess).
+    * *(Opcional)* `7za.exe` na pasta raiz para funcionalidade de compactação.
 
-1.  Preencha os campos de **Host**, **Port**, **Service Name**, **User ID** e **Password** na aba de Conexão.
-2.  Clique em **Testar Conexão** para verificar a conectividade.
-3.  Clique em **Conectar** para estabelecer a conexão com o banco de dados.
+2.  **Como Usar:**
+    * Execute `PLSQLExportFull.exe`.
+    * Preencha os dados de conexão ou clique em **"Colar String"**.
+    * Selecione o grupo de tabelas ou pesquise manualmente.
+    * Marque as tabelas desejadas (Checkboxes).
+    * (Opcional) Edite a coluna "Condição (Where)".
+    * Clique em **Exportar** e escolha o local de salvamento.
 
-### 2. Carregamento e Seleção de Tabelas
+## ⚙️ Arquivo de Configuração (.config)
 
-1.  Na aba de Exportação, selecione um grupo de tabelas no `cmbTableGroups` (ou mantenha "Todos").
-2.  Clique em **Atualizar Tabelas** para carregar a lista de tabelas disponíveis.
-3.  Selecione as tabelas que deseja exportar na lista.
+O sistema suporta importação automática de configurações. O arquivo deve seguir o padrão XML abaixo:
 
-### 3. Exportação DML
-
-1.  (Opcional) Se "Todos" estiver selecionado, você pode inserir uma cláusula `WHERE` manual no campo de filtro.
-2.  Clique em **Exportar DML**.
-3.  Escolha o local e o nome do arquivo `.sql` de saída.
-4.  A aplicação exibirá um cursor de espera e desabilitará o botão durante o processamento.
-5.  Ao final, uma mensagem de sucesso será exibida.
-
-## Estrutura do Projeto
-
-*   `PLSQLExportTool.csproj`: Arquivo de projeto configurado para .NET Framework 4.0.
-*   `packages.config`: Gerenciamento de dependências (incluindo `Oracle.ManagedDataAccess` e `Newtonsoft.Json`).
-*   `Forms/ExportForm.cs`: Lógica da interface do usuário, incluindo a manipulação do cursor de espera.
-*   `Business/ExportManager.cs`: Lógica central de geração do script SQL, incluindo os comandos `SET` e os *timestamps*.
-*   `TableGroups.json`: Arquivo de configuração para definir grupos de tabelas e seus filtros predefinidos.
+```xml
+<?xml version="1.0"?>
+<configuration>
+    <appSettings>
+        <add key="strConexaoBD" value="data source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=172.25.100.205)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=XE)));User Id=usuario;Password=senha;"/>
+    </appSettings>
+</configuration>
