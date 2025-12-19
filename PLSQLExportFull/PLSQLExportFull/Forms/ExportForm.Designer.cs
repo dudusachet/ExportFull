@@ -331,6 +331,8 @@ namespace PLSQLExportFull.Forms
             // 
             // txtSearchTable
             // 
+            this.txtSearchTable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSearchTable.Location = new System.Drawing.Point(349, 46);
             this.txtSearchTable.Name = "txtSearchTable";
             this.txtSearchTable.Size = new System.Drawing.Size(226, 20);

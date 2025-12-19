@@ -11,6 +11,7 @@ using PLSQLExportFull.Models;
 using System.IO;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace PLSQLExportFull.Forms
 {
@@ -107,26 +108,34 @@ namespace PLSQLExportFull.Forms
         {
             // Verifica se a variável do designer existe (geralmente statusStrip ou statusStrip1)
             // Se der erro na linha abaixo, troque 'this.statusStrip' por 'this.statusStrip1'
+            // 2. CRIAR LABEL DO RODAPÉ (Corrigido para ficar à Direita)
             if (this.statusStrip != null)
             {
-                // 1. Cria o label
+                // --- PASSO IMPORTANTE: Empurrar tudo para a direita ---
+                // Procura o primeiro Label existente (o que mostra "Pronto" ou "Conectado")
+                // e diz para ele ocupar todo o espaço sobrando.
+                foreach (ToolStripItem item in this.statusStrip.Items)
+                {
+                    if (item is ToolStripStatusLabel labelExistente)
+                    {
+                        labelExistente.Spring = true;
+                        labelExistente.TextAlign = ContentAlignment.MiddleLeft; // Mantém o texto dele na esquerda
+                        break; // Só precisa fazer no primeiro
+                    }
+                }
+                // ------------------------------------------------------
+
                 lblDbNameFooter = new ToolStripStatusLabel();
-
-                // Define um texto provisório para garantir que você o veja no teste (pode apagar depois)
-                //lblDbNameFooter.Text = "---";
-
+                lblDbNameFooter.Text = "";
                 lblDbNameFooter.ForeColor = Color.FromArgb(49, 49, 48);
                 lblDbNameFooter.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
                 lblDbNameFooter.BorderSides = ToolStripStatusLabelBorderSides.Left;
                 lblDbNameFooter.BorderStyle = Border3DStyle.Etched;
                 lblDbNameFooter.Padding = new Padding(10, 0, 0, 0);
 
-                // 2. Alinhamento à Direita
-                // Para que ele vá para a direita, o item ANTERIOR a ele deve ter Spring = true.
-                // Vamos garantir que ele fique alinhado à direita.
+                // Garante o alinhamento
                 lblDbNameFooter.Alignment = ToolStripItemAlignment.Right;
 
-                // 3. Adiciona na barra
                 this.statusStrip.Items.Add(lblDbNameFooter);
             }
             else
@@ -272,6 +281,16 @@ namespace PLSQLExportFull.Forms
             colWhere.ReadOnly = false;
             colWhere.Width = 200;
             gridTables.Columns.Add(colWhere);
+
+
+            typeof(DataGridView).InvokeMember(
+                "DoubleBuffered",
+                System.Reflection.BindingFlags.NonPublic |
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.SetProperty,
+                null,
+                gridTables,
+                new object[] { true });
         }
         // ====================================================================
         // EVENTOS DE DESENHO E CLIQUE DO GRID (MODERNO)
@@ -507,7 +526,8 @@ namespace PLSQLExportFull.Forms
                 txtServiceName.Text = match.Groups["service"].Value;
                 _isParsingConnectionString = false;
                 UpdateConnectionString();
-                MessageBox.Show("Dados colados com sucesso!", "Importação", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //MessageBox.Show("Dados colados com sucesso!", "Importação", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                btnConnect_Click(this, EventArgs.Empty);
             }
             else
             {
@@ -520,31 +540,41 @@ namespace PLSQLExportFull.Forms
             try
             {
                 toolStripStatusLabel.Text = "Conectando...";
+
+                // Se já estiver conectado, desconecta antes para resetar
                 if (_connectionManager.IsConnected) _connectionManager.Disconnect();
 
+                // Limpa a lista visual e os dados em memória
                 gridTables.Rows.Clear();
                 if (_allTables != null) _allTables.Clear();
 
+                // Realiza a conexão
                 _connectionManager.Connect();
+
+                // Atualiza a interface (Luz Verde, Botões, Rodapé)
                 UpdateConnectionStatus();
 
+                // Se houver grupos de tabelas configurados, carrega o padrão
                 if (cmbTableGroups.Items.Count > 0)
                 {
                     if (cmbTableGroups.SelectedIndex == -1) cmbTableGroups.SelectedIndex = 0;
                     else RefreshTables();
                 }
 
-                MessageBox.Show("Conectado!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // --- ALTERAÇÃO: REMOVIDO O POPUP DE SUCESSO ---
+                // MessageBox.Show("Conectado!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Apenas atualiza o texto na barra inferior
                 toolStripStatusLabel.Text = "Conectado";
             }
             catch (Exception ex)
             {
                 UpdateConnectionStatus();
+                // Em caso de erro, o popup continua sendo importante
                 MessageBox.Show(ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 toolStripStatusLabel.Text = "Falha ao conectar";
             }
         }
-
         private void btnDisconnect_Click(object sender, EventArgs e)
         {
             _connectionManager.Disconnect();
@@ -554,13 +584,77 @@ namespace PLSQLExportFull.Forms
 
         private void btnLoadConfig_Click(object sender, EventArgs e)
         {
-            // Lógica de carregar .config (Omitida para brevidade, pode manter a original se precisar)
-            // Se precisar, me avise que eu recoloco.
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "Arquivos de Configuração (*.config)|*.config|Todos os Arquivos (*.*)|*.*";
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        XmlDocument doc = new XmlDocument();
+                        doc.Load(ofd.FileName);
+                        var addNodes = doc.GetElementsByTagName("add");
+                        string strConexaoFull = "";
+
+                        foreach (XmlNode node in addNodes)
+                        {
+                            if (node.Attributes["key"]?.Value == "strConexaoBD")
+                            {
+                                strConexaoFull = node.Attributes["value"]?.Value;
+                                break;
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(strConexaoFull))
+                        {
+                            ProcessarStringConexao(strConexaoFull);
+                            //MessageBox.Show("Configuração importada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            btnConnect_Click(this, EventArgs.Empty);
+                        }
+                        else MessageBox.Show("Chave 'strConexaoBD' não encontrada.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    catch (Exception ex) { MessageBox.Show("Erro: " + ex.Message); }
+                }
+            }
         }
 
-        // ====================================================================
-        // TABELAS E DADOS
-        // ====================================================================
+        private void ProcessarStringConexao(string fullString)
+        {
+            try
+            {
+                // Limpa espaços
+                fullString = fullString.Trim();
+
+                // 1. Extração do USUÁRIO (User Id, UID ou User)
+                var mUser = Regex.Match(fullString, @"(?:User Id|UID|User)\s*=\s*([^;]+)", RegexOptions.IgnoreCase);
+                if (mUser.Success) txtUserId.Text = mUser.Groups[1].Value.Trim();
+
+                // 2. Extração da SENHA (Password, PWD)
+                var mPass = Regex.Match(fullString, @"(?:Password|PWD)\s*=\s*([^;]+)", RegexOptions.IgnoreCase);
+                if (mPass.Success) txtPassword.Text = mPass.Groups[1].Value.Trim();
+
+                // 3. Extração do HOST (Procura HOST=valor dentro dos parênteses)
+                var mHost = Regex.Match(fullString, @"HOST\s*=\s*([^)\s]+)", RegexOptions.IgnoreCase);
+                if (mHost.Success) txtHost.Text = mHost.Groups[1].Value.Trim();
+
+                // 4. Extração da PORTA
+                var mPort = Regex.Match(fullString, @"PORT\s*=\s*(\d+)", RegexOptions.IgnoreCase);
+                if (mPort.Success) txtPort.Text = mPort.Groups[1].Value.Trim();
+                else txtPort.Text = "1521"; // Padrão se não achar
+
+                // 5. Extração do SERVIÇO (SERVICE_NAME ou SID)
+                var mService = Regex.Match(fullString, @"(?:SERVICE_NAME|SID)\s*=\s*([^)\s]+)", RegexOptions.IgnoreCase);
+                if (mService.Success) txtServiceName.Text = mService.Groups[1].Value.Trim();
+                else txtServiceName.Text = "XE"; // Padrão
+
+                // 6. Atualiza a string interna do sistema
+                UpdateConnectionString();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao processar texto da conexão: " + ex.Message);
+            }
+        }
 
         private void LoadTableGroups()
         {
